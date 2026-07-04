@@ -1,174 +1,406 @@
-📘 Rent_Flatmate (Full Stack Project)
+# Rent & Flatmate Finder
 
-An AI-powered rental matching platform where owners post listings and tenants find rooms based on compatibility scoring (AI + fallback logic).
+A full-stack web application that helps property owners list rental rooms and enables tenants to discover suitable rooms based on their preferences. The application includes AI-assisted compatibility scoring, role-based authentication, interest management, and email notifications for important events.
 
-🌐 Project Structure (Your Repo)
-Rent_Flatmate/
+---
+
+## Project Overview
+
+Rent & Flatmate Finder connects owners and tenants through a simple rental platform.
+
+- Owners can create and manage room listings.
+- Tenants can create a profile, browse available listings, and express interest.
+- Compatibility between a tenant and a listing is calculated using Google's Gemini API with a rule-based fallback mechanism.
+- Owners can accept or decline requests, and notifications are sent through email.
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- React
+- Vite
+- TypeScript
+- Axios
+- React Router DOM
+
+## Backend
+
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- JWT Authentication
+
+## Database
+
+- PostgreSQL
+
+## AI Integration
+
+- Google Gemini API
+- Rule-based compatibility fallback
+
+## Email
+
+- Nodemailer
+
+---
+
+# Project Structure
+
+```
+Rent_Flatmate
 │
-├── frontend/              # React + Vite (Tenant + Owner UI)
-├── src/                   # Backend (Express + TypeScript)
-│   ├── controllers/
-│   ├── routes/
-│   ├── middleware/
-│   ├── utils/
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── prisma/
+│   ├── schema.prisma
+│
+├── src/
 │   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── utils/
+│   └── index.ts
 │
-├── prisma/                # Database schema
-├── package.json           # Backend dependencies
+├── package.json
 ├── tsconfig.json
-├── .gitignore
-├── README.md
-🚀 Features
-🏠 Owner Features
-Register/Login (JWT Auth)
-Create listings (location, rent, room type, furnishing, availability)
-View tenant interest requests
-Accept / Decline interest
-Mark listing as filled
-🧑 Tenant Features
-Register/Login
-Create tenant profile (location, budget, move-in date)
-Browse listings
-Send interest requests
-View compatibility score (AI + fallback)
-🤖 AI Compatibility System
+├── .env.example
+└── README.md
+```
 
-Each tenant–listing pair is scored from 0–100 based on:
+---
 
-Location match
-Budget compatibility
-AI-generated reasoning (Gemini API)
-Fallback rule-based scoring if AI fails
-🧠 AI Prompt Used
-Given this room listing and tenant profile, compute a compatibility score from 0 to 100 based on budget and location match.
+# Features
+
+## Authentication
+
+- User Registration
+- User Login
+- JWT Authentication
+- Role-Based Authorization
+  - Owner
+  - Tenant
+  - Admin
+
+---
+
+## Owner Features
+
+- Register and Login
+- Create room listings
+- View own listings
+- Edit listings
+- Delete listings
+- Mark listings as filled
+- View tenant interest requests
+- Accept tenant requests
+- Decline tenant requests
+
+---
+
+## Tenant Features
+
+- Register and Login
+- Create tenant profile
+- Update tenant profile
+- Browse available listings
+- Send interest requests
+
+---
+
+## Listing Information
+
+Each listing contains:
+
+- Location
+- Rent
+- Room Type
+- Furnished Status
+- Available From Date
+- Image URL
+- Availability Status
+
+---
+
+# AI Compatibility Scoring
+
+When a tenant expresses interest in a listing:
+
+- Listing details and tenant preferences are sent to the Gemini API.
+- Gemini returns:
+  - Compatibility Score (0–100)
+  - Explanation
+
+The result is stored with the interest request.
+
+### Prompt Used
+
+```
+Given this room listing:
+
+Location:
+Rent:
+
+And this tenant profile:
+
+Preferred Location:
+Budget:
+
+Compute a compatibility score from 0 to 100.
 
 Return JSON:
-{ "score": number, "explanation": string }
-🔁 Fallback Logic (Important)
 
-If AI fails:
+{
+  "score": number,
+  "explanation": string
+}
+```
 
-Base score = 50
-+30 if location matches
-+20 if budget is close
-⚙️ Tech Stack
-Frontend
-React (Vite)
-TypeScript
-Axios
-React Router DOM
-Backend
-Node.js
-Express.js
-TypeScript
-Prisma ORM
-JWT Authentication
-Database
-PostgreSQL (via Prisma)
-📡 API Routes
-Auth
+---
+
+## Fallback Logic
+
+If the Gemini API is unavailable, the application automatically switches to a rule-based scoring algorithm.
+
+Rules:
+
+- Base Score = 50
+- +30 if preferred location matches
+- +20 if listing rent is close to tenant budget
+
+This ensures compatibility scoring is always available.
+
+---
+
+# Interest Management
+
+Tenants can:
+
+- Express interest in listings
+
+Owners can:
+
+- View received interests
+- Accept requests
+- Decline requests
+
+When an interest is accepted:
+
+- Status is updated
+- A chat room record is created
+- Email notification is sent to the tenant
+
+---
+
+# Email Notifications
+
+The application sends email notifications for:
+
+- Interest Accepted
+- Interest Declined
+
+Support for notifying owners of high compatibility matches is included and can be extended further.
+
+---
+
+# API Endpoints
+
+## Authentication
+
 POST /auth/register
+
 POST /auth/login
-Listings
+
+---
+
+## Listings
+
 POST /listings
+
 GET /listings
+
 GET /listings/my-listings
+
 PUT /listings/:id
+
 DELETE /listings/:id
-Tenant
+
+PATCH /listings/:id/fill
+
+---
+
+## Tenant
+
 POST /tenant
+
 GET /tenant
-Interest
+
+---
+
+## Interests
+
 POST /interests
+
 GET /interests
+
 PATCH /interests/:id/accept
+
 PATCH /interests/:id/decline
-🔌 Backend Features
-Role-based authentication (OWNER / TENANT / ADMIN)
-Prisma ORM database integration
-Interest workflow system
-AI scoring engine integration
-Email notification hooks (optional configured)
-Chat room creation after acceptance
-💬 Real-Time Chat (Ready Structure)
-Chat room created when interest is accepted
-Message persistence in database
-WebSocket-ready backend architecture
-📧 Notifications
 
-System supports:
+---
 
-Email on interest acceptance
-Email on interest rejection
-Optional email on high compatibility score (>80)
-🧠 Database Models (Prisma)
-User
-Listing
-TenantProfile
-Interest
-ChatRoom
-Message
-⚙️ Setup Instructions
-1️⃣ Clone Repository
-git clone https://github.com/your-username/Rent_Flatmate.git
+# Database Models
+
+The project uses Prisma ORM with PostgreSQL.
+
+Main models include:
+
+- User
+- Listing
+- TenantProfile
+- Interest
+- ChatRoom
+- Message
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/YOUR_GITHUB_USERNAME/Rent_Flatmate.git
+
 cd Rent_Flatmate
-2️⃣ Install Backend Dependencies
+```
+
+---
+
+## Backend
+
+Install dependencies
+
+```bash
 npm install
-3️⃣ Run Backend
+```
+
+Run server
+
+```bash
 npm run dev
-4️⃣ Run Frontend
+```
+
+---
+
+## Frontend
+
+```bash
 cd frontend
+
 npm install
+
 npm run dev
-🔐 Environment Variables
+```
 
-Create .env in backend:
+---
 
+# Environment Variables
+
+Create a `.env` file in the backend.
+
+Example:
+
+```env
 DATABASE_URL=your_database_url
-JWT_SECRET=your_secret
-GEMINI_API_KEY=your_api_key
-🧪 How to Test Project
-Register Owner
-Create Listing
-Register Tenant
-Create Tenant Profile
-Browse Listings
-Send Interest
-View AI Score
-Accept / Decline Interest
-🚀 Deployment (Optional)
-Frontend (Vercel)
-Deploy frontend/
-Add VITE_API_URL
-Backend (Render)
-Deploy root project
-Add environment variables
-⚠️ Important Notes
-❌ Do NOT upload node_modules
-❌ Do NOT upload .env
-❌ Use main branch only
-❌ Keep repo public
-✅ Ensure project runs locally before submission
-👨‍💻 Author
 
-Built as part of Rent & Flatmate Finder Assignment
+JWT_SECRET=your_secret_key
 
-🏁 Status
+GEMINI_API_KEY=your_gemini_api_key
 
-✔ Authentication System
-✔ Listing System
-✔ Interest System
-✔ AI Compatibility Engine
-✔ Fallback Logic
-✔ Backend + Frontend Integration
+EMAIL_USER=your_email
 
-🎯 Final Summary
+EMAIL_PASS=your_email_password
+```
 
-This project demonstrates:
+---
 
-Full-stack MERN-style architecture
-AI-based decision making
-Real-world rental matching logic
-Scalable backend design
-Production-ready structure
+# Testing Flow
 
+1. Register as Owner
+
+2. Login as Owner
+
+3. Create Listing
+
+4. Register as Tenant
+
+5. Login as Tenant
+
+6. Create Tenant Profile
+
+7. Browse Listings
+
+8. Send Interest
+
+9. View Compatibility Score
+
+10. Login as Owner
+
+11. Accept or Decline Interest
+
+12. Verify Email Notification
+
+---
+
+# Deployment
+
+The application can be deployed using:
+
+Frontend
+
+- Vercel
+
+Backend
+
+- Render
+
+Database
+
+- PostgreSQL (Neon, Supabase, Railway or Render PostgreSQL)
+
+---
+
+# Future Improvements
+
+The project can be extended with:
+
+- Fully functional real-time chat using Socket.IO
+- Advanced listing filters
+- Image uploads using Cloudinary
+- Recommendation dashboard
+- Admin analytics dashboard
+- Push notifications
+
+---
+
+# Notes
+
+- Do not commit `.env`
+- Do not commit `node_modules`
+- Keep the repository public for evaluation.
+- Use the `main` branch for submissions.
+
+---
+
+# Author
+
+**Nishant Singh**
+
+Built as part of the **Rent & Flatmate Finder Assignment**.
