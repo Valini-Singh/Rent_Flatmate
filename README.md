@@ -401,6 +401,6 @@ The project can be extended with:
 
 # Author
 
-**Nishant Singh**
+**Valini Singh**
 
 Built as part of the **Rent & Flatmate Finder Assignment**.
