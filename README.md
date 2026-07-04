@@ -403,4 +403,3 @@ The project can be extended with:
 
 **Valini Singh**
 
-Built as part of the **Rent & Flatmate Finder Assignment**.
