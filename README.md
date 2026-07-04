@@ -276,7 +276,7 @@ Main models include:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/Rent_Flatmate.git
+git clone https://github.com/Valini-Singh/Rent_Flatmate.git
 
 cd Rent_Flatmate
 ```
